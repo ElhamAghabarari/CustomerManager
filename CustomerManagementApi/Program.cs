@@ -1,3 +1,6 @@
+using CustomerManagement.Application.Extentions;
+using CustomerManagement.Application.Interfaces;
+using CustomerManagement.Infrastructure.Extentions;
 
 namespace CustomerManagement
 {
@@ -9,10 +12,14 @@ namespace CustomerManagement
 
             // Add services to the container.
 
+            builder.Configuration.AddJsonFile("appsettings.json");
+
             builder.Services.AddControllers();
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
+            builder.Services.AddApplicationServices();
+            builder.Services.AddInfrastructureServices(builder.Configuration);
 
             var app = builder.Build();
 

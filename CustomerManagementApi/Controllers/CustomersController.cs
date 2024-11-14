@@ -1,4 +1,5 @@
 ﻿using CustomerManagement.Application.Interfaces;
+using CustomerManagement.Application.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -24,6 +25,27 @@ namespace CustomerManagement.WebApi.Controllers
         public ActionResult Get(int id)
         {
             return Ok(_customerService.GetCustomer(id));
+        }
+
+        [HttpPut]
+        public ActionResult Add(Customer customer)
+        {
+            return Ok(_customerService.InsertCustomer(customer));
+        }
+
+        [HttpPost]
+        public ActionResult Update(Customer customer)
+        {
+            _customerService.UpdateCustomer(customer);
+            return Ok();
+        }
+
+        [HttpDelete]
+        [Route("{id}")]
+        public ActionResult Delete(int id)
+        {
+            _customerService.DeleteCustomer(id);
+            return Ok();
         }
     }
 }

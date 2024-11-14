@@ -11,9 +11,17 @@ namespace CustomerManagement.Application.Services
     internal class CustomerService: ICustomerService
     {
         private readonly IRepository<Customer> _repository;
-        public CustomerService(IUnitOfWork uw)
+        private readonly IUnitOfWork _unitOfWork;
+        public CustomerService(IUnitOfWork unitOfWork)
         {
-            _repository = uw.GetRepository<Customer>();
+            _unitOfWork = unitOfWork;
+            _repository = unitOfWork.GetRepository<Customer>();
+        }
+
+        public void DeleteCustomer(int id)
+        {
+            _repository.Delete(id);
+            _unitOfWork.Save();
         }
 
         public List<Customer> GetAllCustomers()
@@ -28,7 +36,18 @@ namespace CustomerManagement.Application.Services
 
         public int InsertCustomer(Customer customer)
         {
-            return _repository.Add(customer);
+            _repository.Add(customer);
+            _unitOfWork.Save();
+            return customer.Id;
+        }
+
+        public void UpdateCustomer(Customer customer)
+        {
+            var cus = _repository.GetById(customer.Id);
+            cus.Name = customer.Name;
+
+            _repository.Update(cus);
+            _unitOfWork.Save();
         }
     }
 }

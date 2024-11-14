@@ -28,10 +28,21 @@ namespace CustomerManagement.Infrastructure
             return _context.Set<T>().ToList();
         }
 
-        public int Add(T item)
+        public void Add(T item)
         {
             _context.Set<T>().Add(item);
-            return 0;
+        }
+
+        public void Update(T item)
+        {
+            _context.Set<T>().Update(item);
+        }
+
+        public void Delete(int id)
+        {
+            T? item = _context.Set<T>().Find(id);
+            if(item != null)
+                _context.Set<T>().Remove(item);
         }
     }
 }

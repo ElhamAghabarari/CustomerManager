@@ -17,6 +17,7 @@ namespace CustomerManagement.Infrastructure
         public UnitOfWork(CustomerDbContext context)
         {
             _context = context;
+            _repositories = new Dictionary<Type, object>();
         }
 
         public IRepository<T> GetRepository<T>() where T : class

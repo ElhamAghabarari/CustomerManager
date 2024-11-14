@@ -12,5 +12,7 @@ namespace CustomerManagement.Application.Interfaces
         List<Customer> GetAllCustomers();
         Customer GetCustomer(int id);
         int InsertCustomer(Customer customer);
+        void UpdateCustomer(Customer customer);
+        void DeleteCustomer(int id);
     }
 }

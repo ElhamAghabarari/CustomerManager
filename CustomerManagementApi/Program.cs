@@ -10,6 +10,15 @@ namespace CustomerManagement
         {
             var builder = WebApplication.CreateBuilder(args);
 
+            var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
+            builder.Services.AddCors(options =>
+            {
+                options.AddPolicy(name: MyAllowSpecificOrigins,
+                                  policy =>
+                                  {
+                                      policy.WithOrigins("http://localhost:5173", "http://localhost:5174", "http://localhost:5177").AllowAnyHeader().AllowAnyMethod(); 
+                                  });
+            });
             // Add services to the container.
 
             builder.Configuration.AddJsonFile("appsettings.json");
@@ -32,8 +41,9 @@ namespace CustomerManagement
 
             app.UseHttpsRedirection();
 
-            app.UseAuthorization();
+            app.UseCors(MyAllowSpecificOrigins);
 
+            app.UseAuthorization();
 
             app.MapControllers();
 

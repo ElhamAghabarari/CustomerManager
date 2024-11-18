@@ -20,6 +20,12 @@ namespace CustomerManagement.WebApi.Controllers
             return Ok(_customerService.GetAllCustomers());
         }
 
+        [HttpGet("throw")]
+        public ActionResult GetThrow(int id)
+        {
+            throw new Exception("errorrrrrrrrrrrrrrr");
+        }
+
         [HttpGet]
         [Route("{id}")]
         public ActionResult Get(int id)

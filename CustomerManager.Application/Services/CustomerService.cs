@@ -18,36 +18,38 @@ namespace CustomerManagement.Application.Services
             _repository = unitOfWork.GetRepository<Customer>();
         }
 
-        public void DeleteCustomer(int id)
+        public async Task DeleteCustomer(int id)
         {
             _repository.Delete(id);
             _unitOfWork.Save();
+            await Task.CompletedTask;
         }
 
-        public List<Customer> GetAllCustomers()
+        public async Task<List<Customer>> GetAllCustomers(string search)
         {
-            return _repository.GetAll();
+            return await Task.FromResult(_repository.GetAll((item) => item.Name.ToLower().Contains(search)));
         }
 
-        public Customer GetCustomer(int id)
+        public async Task<Customer> GetCustomer(int id)
         {
-            return _repository.GetById(id);
+            return await Task.FromResult(_repository.GetById(id));
         }
 
-        public int InsertCustomer(Customer customer)
+        public async Task InsertCustomer(Customer customer)
         {
             _repository.Add(customer);
             _unitOfWork.Save();
-            return customer.Id;
+            await Task.CompletedTask;
         }
 
-        public void UpdateCustomer(Customer customer)
+        public async Task UpdateCustomer(Customer customer)
         {
             var cus = _repository.GetById(customer.Id);
             cus.Name = customer.Name;
 
             _repository.Update(cus);
             _unitOfWork.Save();
+            await Task.CompletedTask;
         }
     }
 }

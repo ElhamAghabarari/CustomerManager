@@ -1,8 +1,6 @@
 using CustomerManagement.Application.Extentions;
-using CustomerManagement.Application.Interfaces;
 using CustomerManagement.Infrastructure.Extentions;
 using CustomerManagement.WebApi.Handlers;
-using Microsoft.AspNetCore.Http;
 
 namespace CustomerManagement
 {
@@ -10,6 +8,7 @@ namespace CustomerManagement
     {
         public static void Main(string[] args)
         {
+
             var builder = WebApplication.CreateBuilder(args);
 
             var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
@@ -18,12 +17,15 @@ namespace CustomerManagement
                 options.AddPolicy(name: MyAllowSpecificOrigins,
                                   policy =>
                                   {
-                                      policy.WithOrigins("http://localhost:5173", "http://localhost:5174", "http://localhost:5177").AllowAnyHeader().AllowAnyMethod(); 
+                                      policy.WithOrigins("http://localhost").AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin(); 
                                   });
             });
             // Add services to the container.
 
+           
+
             builder.Configuration.AddJsonFile("appsettings.json");
+            
 
             /*
                 builder.Configuration.AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
@@ -81,6 +83,9 @@ namespace CustomerManagement
             app.MapControllers();
 
             app.Run();
+
+
+           
         }
     }
 }

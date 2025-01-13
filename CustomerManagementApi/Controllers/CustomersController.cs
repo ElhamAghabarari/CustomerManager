@@ -1,5 +1,9 @@
-﻿using CustomerManagement.Application.Interfaces;
+﻿
 using CustomerManagement.Application.Models;
+using CustomerManagement.Application.Services.commands;
+using CustomerManagement.Application.Services.notifications;
+using CustomerManagement.Application.Services.Queries;
+using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -9,48 +13,48 @@ namespace CustomerManagement.WebApi.Controllers
     [ApiController]
     public class CustomersController : ControllerBase
     {
-        private readonly ICustomerService _customerService;
-        public CustomersController(ICustomerService customerServive) {
-            _customerService = customerServive;
+        private readonly ISender _sender;
+        private readonly IPublisher _publisher;
+        public CustomersController(ISender sender, IPublisher publisher)
+        {
+            _sender = sender;
+            _publisher = publisher;
         }
 
         [HttpGet]
-        public ActionResult GetAll()
+        public async Task<ActionResult> GetAll([FromQuery]string search="")
         {
-            return Ok(_customerService.GetAllCustomers());
+            var list = await _sender.Send(new CustomerGetAllQuery(search));
+           // System.Threading.Thread.Sleep(5000);
+            return  Ok(list);
         }
 
-        [HttpGet("throw")]
-        public ActionResult GetThrow(int id)
+        [HttpGet("{id:int}")]
+        public async Task<ActionResult> Get(int id)
         {
-            throw new Exception("errorrrrrrrrrrrrrrr");
-        }
-
-        [HttpGet]
-        [Route("{id}")]
-        public ActionResult Get(int id)
-        {
-            return Ok(_customerService.GetCustomer(id));
-        }
-
-        [HttpPut]
-        public ActionResult Add(Customer customer)
-        {
-            return Ok(_customerService.InsertCustomer(customer));
+            var item = await _sender.Send(new CustomerGetByIdQuery(id));
+            return Ok(item);
         }
 
         [HttpPost]
-        public ActionResult Update(Customer customer)
+        public async Task<ActionResult> Add(Customer customer)
         {
-            _customerService.UpdateCustomer(customer);
-            return Ok();
+            await _sender.Send(new CustomerAddCommand(customer));
+            await _publisher.Publish(new CustomerAddNotification(customer));
+            return Ok(customer);
         }
 
-        [HttpDelete]
-        [Route("{id}")]
-        public ActionResult Delete(int id)
+        [HttpPut]
+        public async Task<ActionResult> Update(Customer customer)
         {
-            _customerService.DeleteCustomer(id);
+            await _sender.Send(new CustomerUpdateCommand(customer));
+            return Ok(customer);
+        }
+
+        [HttpDelete("{id:int}")]
+        public async Task<ActionResult> Delete(int id)
+        {
+            await _sender.Send(new CustomerDeleteCommand(id));
             return Ok();
         }
     }

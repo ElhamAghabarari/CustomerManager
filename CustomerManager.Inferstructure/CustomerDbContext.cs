@@ -5,6 +5,12 @@ namespace CustomerManager.Inferstructure
 {
     public class CustomerDbContext : DbContext
     {
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<Customer>().HasKey(item => item.Id);
+
+            modelBuilder.Entity<Customer>().Property(t => t.Name).IsRequired();
+        }
         public CustomerDbContext(DbContextOptions options) :base(options)
         {
 

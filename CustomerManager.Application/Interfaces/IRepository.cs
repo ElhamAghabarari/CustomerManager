@@ -8,7 +8,7 @@ namespace CustomerManagement.Application.Interfaces
 {
     public interface IRepository<T>
     {
-        List<T> GetAll();
+        List<T> GetAll(Func<T,bool>filter);
         T GetById(int id);
         void Add(T item);
         void Update(T item);

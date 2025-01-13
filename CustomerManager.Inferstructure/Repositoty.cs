@@ -23,9 +23,10 @@ namespace CustomerManagement.Infrastructure
             return _context.Set<T>().Find(id);
         }
 
-        public List<T> GetAll()
+        public List<T> GetAll(Func<T,bool>filter)
         {
-            return _context.Set<T>().ToList();
+            var res=_context.Set<T>().AsQueryable();
+            return res.Where(filter).ToList();
         }
 
         public void Add(T item)
